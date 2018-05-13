@@ -88,7 +88,8 @@ namespace Assets.Scripts
         public Damage Damage;
         public int DistanceWidth;
         public int DistanceHeight;
-        public float Speed;
+        public float MainSpeed;
+        public float BuffedSpeed;
         public ElementTypes ElementType;
         public float DealingDamage { get; set; }
         public void CastSkill(Character character, bool isPerfect = false)
@@ -99,21 +100,32 @@ namespace Assets.Scripts
                 character.ImmunityLevels.IncreaseImmunity(ElementType);
             }
 
-            AdjustDamageWithBuffs(character);
+            AdjustAttackWithBuffs(character);
 
             CurrentCooldownLevel = AdjustedCooldownTime;
             ApplyDrawback(character);
         }
 
-        private void AdjustDamageWithBuffs(Character character)
+        private void AdjustAttackWithBuffs(Character character)
         {
-            var effectingBuffs = character.Buffs.GetEffectorBuffs(ElementType, BuffType.Damage);
-            var damageCofactor = effectingBuffs.Sum(buff => buff.Amount * DealingDamage);
-            DealingDamage += damageCofactor;
+            var effectingBuffs = character.Buffs.GetEffectorBuffs(ElementType);
+            foreach (var effectingBuff in effectingBuffs)
+            {
+                if (effectingBuff.BuffType==BuffType.Damage)
+                {
+                    DealingDamage += effectingBuff.Amount * DealingDamage;
+                }
+                else if (effectingBuff.BuffType==BuffType.Speed)
+                {
+                    BuffedSpeed += effectingBuff.Amount * MainSpeed;
+                }
+            }
+            
         }
 
         public Skill()
         {
+            BuffedSpeed = MainSpeed;
             _element = new Element
             {
                 ElementType = ElementType

@@ -24,13 +24,26 @@ public class BuffController
         Buffs.Add(buff);
     }
 
-    public IEnumerable<Buff> GetEffectorBuffs(ElementTypes elementType, BuffType buffType)
+    public IEnumerable<Buff> GetEffectorBuffs(ElementTypes elementType, BuffType buffType = BuffType.All)
     {
-        foreach (var buff in Buffs)
+        if (buffType != BuffType.All)
         {
-            if (buff.Skill.ElementType == elementType && buff.BuffType == buffType)
+            foreach (var buff in Buffs)
             {
-                yield return buff;
+                if (buff.Skill.ElementType == elementType && buff.BuffType == buffType)
+                {
+                    yield return buff;
+                }
+            }
+        }
+        else
+        {
+            foreach (var buff in Buffs)
+            {
+                if (buff.Skill.ElementType == elementType)
+                {
+                    yield return buff;
+                }
             }
         }
     }
@@ -45,5 +58,6 @@ public class Buff
 public enum BuffType
 {
     Damage,
-    Speed
+    Speed,
+    All
 }

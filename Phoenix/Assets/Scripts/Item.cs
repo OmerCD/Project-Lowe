@@ -12,8 +12,14 @@ namespace ItemControl
 
         public float Weight;
         public Sprite Artwork;
+        public List<ItemEffect> Effects { get; set; }
     }
 
+    public struct ItemEffect
+    {
+        public string Name { get; set; }
+        public Action EffectAction { get; set; }
+    }
     public class WornPlace
     {
         public WearArea WearArea { get; set; }
