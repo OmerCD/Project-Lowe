@@ -8,7 +8,46 @@ using UnityEngine;
 
 namespace Assets.Scripts
 {
-    public class Character : MonoBehaviour
+    public partial class Character
+    {
+        public class Immunity
+        {
+            public string Name
+            {
+                get { return ElementType + " " + Value; }
+            }
+            public ElementTypes ElementType;
+            public float Value;
+        }
+        public class ImmunityLevel
+        {
+            private const int MAX_IMMUNITY = 25;
+            private readonly List<Immunity> _immunities = new List<Immunity>();
+
+            public Immunity this[int i]
+            {
+                get { return _immunities[i]; }
+            }
+
+            public void IncreaseImmunity(ElementTypes elementType)
+            {
+                var immunity = _immunities.FirstOrDefault(x => x.ElementType == elementType);
+                if (immunity != null)
+                {
+                    if (immunity.Value < MAX_IMMUNITY)
+                    {
+                        immunity.Value += 0.05f;
+                    }
+                }
+                else
+                {
+                    _immunities.Add(new Immunity { ElementType = elementType, Value = 0.05f });
+                }
+            }
+        }
+
+    }
+    public partial class Character : MonoBehaviour
     {
         public string Name = "TestCharacter";
         public float Health = 100;
@@ -17,6 +56,8 @@ namespace Assets.Scripts
         public BuffController Buffs = new BuffController();
         public ImmunityLevel ImmunityLevels = new ImmunityLevel();
         public float Speed = 10;
+        public float VisionLevel;
+        public bool CanMove;
 
         public float Weight
         {
@@ -29,58 +70,20 @@ namespace Assets.Scripts
 
         void Start()
         {
-            Immunity test =  new Immunity
-            {
-                ElementType = ElementTypes.Air,
-                Value = 10
-            };
-            Debug.Log(test.Name);
         }
     }
-
-    public class Immunity
-    {
-        public string Name
-        {
-            get { return ElementType +" "+ Value; }
-        }
-        public ElementTypes ElementType;
-        public float Value;
-    }
-    public class ImmunityLevel
-    {
-        private const int MAX_IMMUNITY = 25;
-        private List<Immunity> _immunities = new List<Immunity>();
-
-        public Immunity this[int i]
-        {
-            get { return _immunities[i]; }
-        }
-
-        public void IncreaseImmunity(ElementTypes elementType)
-        {
-            var immunity = _immunities.FirstOrDefault(x => x.ElementType == elementType);
-            if (immunity!=null)
-            {
-                if (immunity.Value< MAX_IMMUNITY)
-                {
-                    immunity.Value += 0.05f;
-                }
-            }
-        }
-    }
-
 
     [CreateAssetMenu(fileName = "Skill", menuName = "Skill")]
 
 
     public class Skill : ScriptableObject
     {
-    
+
         private Element _element;
         public string Name;
-        public float CooldownTime;
-        internal float CurrentCooldown = 0;
+        private float _mainCooldownTime;
+        public float AdjustedCooldownTime;
+        internal float CurrentCooldownLevel = 0;
         public float PerfectTime;
         public Damage Damage;
         public int DistanceWidth;
@@ -88,22 +91,34 @@ namespace Assets.Scripts
         public float Speed;
         public ElementTypes ElementType;
         public float DealingDamage { get; set; }
-        public void CastSkill(Character character,bool isPerfect=false)
+        public void CastSkill(Character character, bool isPerfect = false)
         {
-        
+
             if (isPerfect)
             {
                 character.ImmunityLevels.IncreaseImmunity(ElementType);
             }
-            CurrentCooldown = CooldownTime;
+
+            AdjustDamageWithBuffs(character);
+
+            CurrentCooldownLevel = AdjustedCooldownTime;
             ApplyDrawback(character);
         }
+
+        private void AdjustDamageWithBuffs(Character character)
+        {
+            var effectingBuffs = character.Buffs.GetEffectorBuffs(ElementType, BuffType.Damage);
+            var damageCofactor = effectingBuffs.Sum(buff => buff.Amount * DealingDamage);
+            DealingDamage += damageCofactor;
+        }
+
         public Skill()
         {
-            _element =new Element
+            _element = new Element
             {
                 ElementType = ElementType
             };
+            AdjustedCooldownTime = _mainCooldownTime;
         }
         /// <summary>
         /// Applies Drawback to the given character

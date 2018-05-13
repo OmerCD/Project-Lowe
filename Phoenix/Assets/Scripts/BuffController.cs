@@ -13,19 +13,37 @@ public class BuffController
 
     public void AddBuff(Buff buff, Character character, float time = 0)
     {
-        if (time>0)
+        if (time > 0)
         {
-            TimerControl timer = new TimerControl(time,c =>
-            {
-                Debug.Log("Out of Ice");
-                Buffs.Remove(buff);
-            },character);
+            TimerControl timer = new TimerControl(time, c =>
+             {
+                 Debug.Log("Out of Ice");
+                 Buffs.Remove(buff);
+             }, character);
         }
         Buffs.Add(buff);
+    }
+
+    public IEnumerable<Buff> GetEffectorBuffs(ElementTypes elementType, BuffType buffType)
+    {
+        foreach (var buff in Buffs)
+        {
+            if (buff.Skill.ElementType == elementType && buff.BuffType == buffType)
+            {
+                yield return buff;
+            }
+        }
     }
 }
 public class Buff
 {
     public float Amount { get; set; }
     public Skill Skill { get; set; }
+    public BuffType BuffType { get; set; }
+}
+
+public enum BuffType
+{
+    Damage,
+    Speed
 }

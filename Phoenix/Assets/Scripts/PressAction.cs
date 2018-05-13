@@ -27,11 +27,11 @@ namespace Assets.Scripts
 
             foreach (var assigned in _character.AssignedSkills)
             {
-                if (assigned.Value.CurrentCooldown>0)
+                if (assigned.Value.CurrentCooldownLevel>0)
                 {
-                    assigned.Value.CurrentCooldown -= Time.deltaTime;
+                    assigned.Value.CurrentCooldownLevel -= Time.deltaTime;
                 }
-                if (assigned.Value.CurrentCooldown <= 0)
+                if (assigned.Value.CurrentCooldownLevel <= 0)
                 {
                     if (Input.GetButtonDown(assigned.Key))
                     {
