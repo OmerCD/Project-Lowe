@@ -10,6 +10,7 @@ namespace Assets.Scripts
         {
             _assignedSkills.Add("A",Skills[0]);
             _assignedSkills.Add("B",Skills[1]);
+            CurrentSpeed = BaseSpeed;
         }
         public Dictionary<string, Skill> AssignedSkills
         {

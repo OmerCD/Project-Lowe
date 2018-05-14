@@ -8,17 +8,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: c536d2e88ff51ac4f93fce5ac1bbc060, type: 3}
   m_Name: Ice
-  m_EditorClassIdentifier: Assembly-CSharp:Assets.Scripts:Skill
+  m_EditorClassIdentifier: 
   Name: Ice
-  CooldownTime: 10
+  AdjustedCooldownTime: 0
   PerfectTime: 4
   Damage:
     Minimum: 10
     Maximum: 20
     Perfect: 40
-  DistanceWidth: 0
-  DistanceHeight: 0
-  Speed: 0
+  DistanceWidth: 3
+  DistanceHeight: 3
+  MainSpeed: 0
+  BuffedSpeed: 0
   ElementType: 0

@@ -55,9 +55,11 @@ namespace Assets.Scripts
         public List<Skill> Skills;
         public BuffController Buffs = new BuffController();
         public ImmunityLevel ImmunityLevels = new ImmunityLevel();
-        public float Speed = 10;
+        public float BaseSpeed = 10;
+        public float CurrentSpeed;
         public float VisionLevel;
         public bool CanMove;
+        public EnemyCharacter CurrentEnemy;
 
         public float Weight
         {
@@ -68,79 +70,15 @@ namespace Assets.Scripts
         }
         public WornItems WornItems;
 
+        public Character()
+        {
+        }
+
         void Start()
         {
         }
     }
 
-    [CreateAssetMenu(fileName = "Skill", menuName = "Skill")]
-
-
-    public class Skill : ScriptableObject
-    {
-
-        private Element _element;
-        public string Name;
-        private float _mainCooldownTime;
-        public float AdjustedCooldownTime;
-        internal float CurrentCooldownLevel = 0;
-        public float PerfectTime;
-        public Damage Damage;
-        public int DistanceWidth;
-        public int DistanceHeight;
-        public float MainSpeed;
-        public float BuffedSpeed;
-        public ElementTypes ElementType;
-        public float DealingDamage { get; set; }
-        public void CastSkill(Character character, bool isPerfect = false)
-        {
-
-            if (isPerfect)
-            {
-                character.ImmunityLevels.IncreaseImmunity(ElementType);
-            }
-
-            AdjustAttackWithBuffs(character);
-
-            CurrentCooldownLevel = AdjustedCooldownTime;
-            ApplyDrawback(character);
-        }
-
-        private void AdjustAttackWithBuffs(Character character)
-        {
-            var effectingBuffs = character.Buffs.GetEffectorBuffs(ElementType);
-            foreach (var effectingBuff in effectingBuffs)
-            {
-                if (effectingBuff.BuffType==BuffType.Damage)
-                {
-                    DealingDamage += effectingBuff.Amount * DealingDamage;
-                }
-                else if (effectingBuff.BuffType==BuffType.Speed)
-                {
-                    BuffedSpeed += effectingBuff.Amount * MainSpeed;
-                }
-            }
-            
-        }
-
-        public Skill()
-        {
-            BuffedSpeed = MainSpeed;
-            _element = new Element
-            {
-                ElementType = ElementType
-            };
-            AdjustedCooldownTime = _mainCooldownTime;
-        }
-        /// <summary>
-        /// Applies Drawback to the given character
-        /// </summary>
-        /// <param name="character"></param>
-        public void ApplyDrawback(Character character)
-        {
-            _element.DrawbackFunc(character);
-        }
-    }
     [System.Serializable]
     public struct Damage
     {

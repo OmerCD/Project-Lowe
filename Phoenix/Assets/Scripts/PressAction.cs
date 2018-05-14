@@ -39,6 +39,7 @@ namespace Assets.Scripts
                         _lastPressed = assigned.Key;
                         _timeCalc = Time.time;
                         Debug.Log("Pressed " + assigned.Key + "\nTime:" + _timeCalc);
+                        EnemyScanner.FindClossestEnemy(assigned.Value.DistanceWidth, assigned.Value.DistanceHeight, assigned.Value.Element.AreaColor);
                     }
                 }
             }
@@ -71,6 +72,7 @@ namespace Assets.Scripts
                     currentSkill.DealingDamage = _random.Next((int) (currentSkill.Damage.Minimum+5),(int) (currentSkill.Damage.Maximum));
                     Debug.Log("Maximum :" + currentSkill.DealingDamage);
                 }
+                EnemyScanner.CloseScanner();
                 currentSkill.CastSkill(_character,isPerfect);
                 Debug.Log(message: timeDifference);
                 _pressed = false;

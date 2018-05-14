@@ -18,8 +18,8 @@ MonoBehaviour:
     Minimum: 3
     Maximum: 10
     Perfect: 20
-  DistanceWidth: 0
-  DistanceHeight: 0
+  DistanceWidth: 2
+  DistanceHeight: 1
   MainSpeed: 0
   BuffedSpeed: 0
-  ElementType: 0
+  ElementType: 1
