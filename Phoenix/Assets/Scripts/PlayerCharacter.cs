@@ -6,8 +6,9 @@ namespace Assets.Scripts
     {
         Dictionary<string,Skill> _assignedSkills = new Dictionary<string, Skill>();
 
-        void Start()
+        protected sealed override void Start()
         {
+            base.Start();
             _assignedSkills.Add("A",Skills[0]);
             _assignedSkills.Add("B",Skills[1]);
             CurrentSpeed = BaseSpeed;

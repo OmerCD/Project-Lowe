@@ -62,6 +62,8 @@ public static class DrawbackAssistant
     } 
     private static void FireDrawback(Character character, Skill skill)
     {
+        if (character.CurrentEnemy == null) return;
+
         var multiplier = 0.02f;
         if (skill.DealingDamage == skill.Damage.Minimum)
         {

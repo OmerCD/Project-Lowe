@@ -10,43 +10,77 @@ namespace Assets.Scripts
     {
         static SpriteRenderer _spriteRenderer;
         static GameObject _gOCollider;
+        private static HashSet<GameObject> _enemiesInSpellRange = new HashSet<GameObject>();
+        private BoxCollider2D _boxCollider2D;
 
         void Start()
         {
             _gOCollider = GameObject.Find("CastArea");
             _spriteRenderer = _gOCollider.GetComponent<SpriteRenderer>();
         }
-        public static EnemyCharacter FindClossestEnemy(float rangeX, float rangeY, Color areaColor)
+        public void StartCastArea(float rangeX, float rangeY, Color areaColor)
         {
             var player = GameObject.FindObjectOfType<PlayerCharacter>();
 
             _gOCollider.SetActive(true);
+            _boxCollider2D = _gOCollider.GetComponent<BoxCollider2D>();
+            _boxCollider2D.enabled = true;
             var rTransform = _gOCollider.GetComponent<RectTransform>();
             rTransform.localScale = new Vector3(rangeX * 0.5f, rangeY * 0.5f);
             rTransform.localPosition = new Vector3(rangeX * 0.25f + 0.25f, 0);
             //gOCollider.GetComponent<SpriteRenderer>().material.SetColor("_Color",areaColor);
             _spriteRenderer.color = areaColor;
             _spriteRenderer.enabled = true;
-            EnemyCharacter clossest;
-            var enemyCharacters = GameObject.FindObjectsOfType<EnemyCharacter>();
-            clossest = enemyCharacters[0];
-            for (int i = 1; i < enemyCharacters.Length; i++)
-            {
-                //todo
-            }
-            return clossest;
+            
         }
 
-        private static bool IsInRange(Vector2 playerLoc, Vector2 enemyLoc, float rangeX, float rangeY)
+        public IEnumerable<EnemyCharacter> GetEnemiesInRange()
+        {
+            return _enemiesInSpellRange.Select(x=>x.GetComponent<EnemyCharacter>());
+        }
+
+        private EnemyCharacter GetClossest()
+        {
+            foreach (var enemy in _enemiesInSpellRange)
+            {
+                
+            }
+            return null;
+        }
+
+        void OnTriggerEnter2D(Collider2D obj)
+        {
+            if (obj.tag == "Enemy")
+            {
+                if (!_enemiesInSpellRange.Contains(obj.gameObject))
+                {
+                    _enemiesInSpellRange.Add(obj.gameObject);
+                }
+            }
+        }
+
+        void OnTriggerExit2D(Collider2D obj)
+        {
+            if (obj.tag == "Enemy")
+            {
+                if (_enemiesInSpellRange.Contains(obj.gameObject))
+                {
+                    _enemiesInSpellRange.Remove(obj.gameObject);
+                }
+            }
+        }
+        private bool IsInRange(Vector2 playerLoc, Vector2 enemyLoc, float rangeX, float rangeY)
         {
             //todo
             return false;
         }
 
-        public static void CloseScanner()
+        public void CloseScanner()
         {
             _gOCollider.SetActive(false);
             _spriteRenderer.enabled = false;
+            _boxCollider2D.enabled = false;
+            _enemiesInSpellRange= new HashSet<GameObject>();
         }
     }
 }

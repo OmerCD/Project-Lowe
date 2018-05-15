@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Name: Fire
   m_EditorClassIdentifier: Assembly-CSharp:Assets.Scripts:Skill
   Name: Fire
-  AdjustedCooldownTime: 0
+  _mainCooldownTime: 5
+  AdjustedCooldownTime: 5
   PerfectTime: 2
   Damage:
     Minimum: 3

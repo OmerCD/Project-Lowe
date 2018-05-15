@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Name: Ice
   m_EditorClassIdentifier: 
   Name: Ice
-  AdjustedCooldownTime: 0
+  _mainCooldownTime: 10
+  AdjustedCooldownTime: 10
   PerfectTime: 4
   Damage:
     Minimum: 10

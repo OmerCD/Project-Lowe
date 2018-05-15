@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
 namespace Assets.Scripts
 {
@@ -10,7 +12,7 @@ namespace Assets.Scripts
 
         public Element Element;
         public string Name;
-        private float _mainCooldownTime;
+        [SerializeField]private float _mainCooldownTime;
         public float AdjustedCooldownTime;
         internal float CurrentCooldownLevel = 0;
         public float PerfectTime;
@@ -21,8 +23,10 @@ namespace Assets.Scripts
         public float BuffedSpeed;
         public ElementTypes ElementType;
         public float DealingDamage { get; set; }
-        public void CastSkill(Character character, bool isPerfect = false)
+        public void CastSkill(Character character, IEnumerable<EnemyCharacter> enemies, bool isPerfect = false)
         {
+            character.CurrentEnemy = enemies.FirstOrDefault();
+
             if (isPerfect)
             {
                 character.ImmunityLevels.IncreaseImmunity(ElementType);
@@ -33,7 +37,13 @@ namespace Assets.Scripts
                 ApplyDrawback(character);
             }
             AdjustAttackWithBuffs(character);
-
+            if (character.CurrentEnemy != null)
+            {
+                foreach (var enemy in enemies)
+                {
+                    enemy.GetComponent<EnemyCharacter>().Health -= DealingDamage;
+                }
+            }
             CurrentCooldownLevel = AdjustedCooldownTime;
         }
 
@@ -42,16 +52,16 @@ namespace Assets.Scripts
             var effectingBuffs = character.Buffs.GetEffectorBuffs(ElementType);
             foreach (var effectingBuff in effectingBuffs)
             {
-                if (effectingBuff.BuffType==BuffType.Damage)
+                if (effectingBuff.BuffType == BuffType.Damage)
                 {
                     DealingDamage += effectingBuff.Amount * DealingDamage;
                 }
-                else if (effectingBuff.BuffType==BuffType.Speed)
+                else if (effectingBuff.BuffType == BuffType.Speed)
                 {
                     BuffedSpeed += effectingBuff.Amount * MainSpeed;
                 }
             }
-            
+
         }
 
         public void OnEnable()

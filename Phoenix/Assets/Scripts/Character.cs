@@ -49,8 +49,10 @@ namespace Assets.Scripts
     }
     public partial class Character : MonoBehaviour
     {
+        [SerializeField]private float _fullHealth = 100;
+        public Action<float, float> OnHealthChanged;
         public string Name = "TestCharacter";
-        public float Health = 100;
+        private float _health;
         public List<Item> Inventory;
         public List<Skill> Skills;
         public BuffController Buffs = new BuffController();
@@ -68,14 +70,30 @@ namespace Assets.Scripts
                 return Inventory.Sum(item => item.Weight);
             }
         }
+
+        public float Health
+        {
+            get
+            {
+                return _health;
+            }
+
+            set
+            {
+                OnHealthChanged(_fullHealth, value);
+                _health = value;
+            }
+        }
+
         public WornItems WornItems;
 
         public Character()
         {
         }
 
-        void Start()
+        protected virtual void Start()
         {
+            _health = _fullHealth;
         }
     }
 

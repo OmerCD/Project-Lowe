@@ -50,11 +50,13 @@ public class PlayerController : MonoBehaviour
         {
             if (Input.GetAxis("RT") > 0.8)
             {
+                PressAction.OnButtonPressed("RT");
                 _rotationCooldown = 15;
                 transform.rotation = Quaternion.Euler(0, 0, transform.rotation.eulerAngles.z - 90);
             }
             if (Input.GetAxis("LT") > 0.8)
             {
+                PressAction.OnButtonPressed("LT");
                 _rotationCooldown = 15;
                 transform.rotation = Quaternion.Euler(0, 0, transform.rotation.eulerAngles.z + 90);
             }

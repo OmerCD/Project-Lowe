@@ -14,10 +14,13 @@ namespace Assets.Scripts
         public float _timeCalc;
         private PlayerCharacter _character;
         private Random _random = new Random();
+        public static Action<string> OnButtonPressed;
+        private EnemyScanner _eScanner;
         
 
         void Start()
         {
+            _eScanner = GetComponent<EnemyScanner>();
             _character = GetComponent<PlayerCharacter>();
         }
 
@@ -35,16 +38,19 @@ namespace Assets.Scripts
                 {
                     if (Input.GetButtonDown(assigned.Key))
                     {
+                        if (OnButtonPressed != null) OnButtonPressed(assigned.Key);
                         _pressed = true;
                         _lastPressed = assigned.Key;
                         _timeCalc = Time.time;
                         Debug.Log("Pressed " + assigned.Key + "\nTime:" + _timeCalc);
-                        EnemyScanner.FindClossestEnemy(assigned.Value.DistanceWidth, assigned.Value.DistanceHeight, assigned.Value.Element.AreaColor);
+                        _eScanner.StartCastArea(assigned.Value.DistanceWidth, assigned.Value.DistanceHeight, assigned.Value.Element.AreaColor);
                     }
                 }
             }
             if (_pressed && Input.GetButtonDown("RB"))
             {
+                OnButtonPressed("RB");
+                var enemies = _eScanner.GetEnemiesInRange();
                 var now = Time.time;
                 var isPerfect = false;
                 var timeDifference = Math.Abs(now - _timeCalc);
@@ -72,8 +78,8 @@ namespace Assets.Scripts
                     currentSkill.DealingDamage = _random.Next((int) (currentSkill.Damage.Minimum+5),(int) (currentSkill.Damage.Maximum));
                     Debug.Log("Maximum :" + currentSkill.DealingDamage);
                 }
-                EnemyScanner.CloseScanner();
-                currentSkill.CastSkill(_character,isPerfect);
+                _eScanner.CloseScanner();
+                currentSkill.CastSkill(_character,enemies,isPerfect);
                 Debug.Log(message: timeDifference);
                 _pressed = false;
             }
