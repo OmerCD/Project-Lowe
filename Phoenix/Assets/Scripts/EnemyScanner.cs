@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using UnityEngine;
 
 namespace Assets.Scripts
 {
+    [RequireComponent(typeof(PlayerCharacter))]
+
     class EnemyScanner : MonoBehaviour
     {
         static SpriteRenderer _spriteRenderer;
@@ -20,7 +23,7 @@ namespace Assets.Scripts
         }
         public void StartCastArea(float rangeX, float rangeY, Color areaColor)
         {
-            var player = GameObject.FindObjectOfType<PlayerCharacter>();
+            var player = GetComponent<PlayerCharacter>();
 
             _gOCollider.SetActive(true);
             _boxCollider2D = _gOCollider.GetComponent<BoxCollider2D>();
@@ -28,29 +31,46 @@ namespace Assets.Scripts
             var rTransform = _gOCollider.GetComponent<RectTransform>();
             rTransform.localScale = new Vector3(rangeX * 0.5f, rangeY * 0.5f);
             rTransform.localPosition = new Vector3(rangeX * 0.25f + 0.25f, 0);
-            //gOCollider.GetComponent<SpriteRenderer>().material.SetColor("_Color",areaColor);
             _spriteRenderer.color = areaColor;
             _spriteRenderer.enabled = true;
-            
+
         }
 
         public IEnumerable<EnemyCharacter> GetEnemiesInRange()
         {
-            return _enemiesInSpellRange.Select(x=>x.GetComponent<EnemyCharacter>());
+            return _enemiesInSpellRange.Select(x => x.GetComponent<EnemyCharacter>());
         }
 
         private EnemyCharacter GetClossest()
         {
+            var distance = float.MaxValue;
+            GameObject clossestEnemy = null;
             foreach (var enemy in _enemiesInSpellRange)
             {
-                
+                var enemyLocation = enemy.transform.position;
+                var currentDistance = Vector2.Distance(enemyLocation, transform.position);
+                if (currentDistance<distance)
+                {
+                    distance = currentDistance;
+                    clossestEnemy = enemy;
+                }
             }
-            return null;
+
+            if (clossestEnemy==null)
+            {
+                return null;
+            }
+            else if (clossestEnemy !=null)
+            {
+                return clossestEnemy.GetComponent<EnemyCharacter>();
+            }
+
+            throw new Exception();
         }
 
         void OnTriggerEnter2D(Collider2D obj)
         {
-            if (obj.tag == "Enemy")
+            if (obj.CompareTag("Enemy"))
             {
                 if (!_enemiesInSpellRange.Contains(obj.gameObject))
                 {
@@ -61,7 +81,7 @@ namespace Assets.Scripts
 
         void OnTriggerExit2D(Collider2D obj)
         {
-            if (obj.tag == "Enemy")
+            if (obj.CompareTag("Enemy"))
             {
                 if (_enemiesInSpellRange.Contains(obj.gameObject))
                 {
@@ -72,7 +92,7 @@ namespace Assets.Scripts
         private bool IsInRange(Vector2 playerLoc, Vector2 enemyLoc, float rangeX, float rangeY)
         {
             //todo
-            return false;
+            throw new NotImplementedException();
         }
 
         public void CloseScanner()
@@ -80,7 +100,7 @@ namespace Assets.Scripts
             _gOCollider.SetActive(false);
             _spriteRenderer.enabled = false;
             _boxCollider2D.enabled = false;
-            _enemiesInSpellRange= new HashSet<GameObject>();
+            _enemiesInSpellRange = new HashSet<GameObject>();
         }
     }
 }

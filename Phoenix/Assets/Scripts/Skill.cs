@@ -41,7 +41,7 @@ namespace Assets.Scripts
             {
                 foreach (var enemy in enemies)
                 {
-                    enemy.GetComponent<EnemyCharacter>().Health -= DealingDamage;
+                    enemy.GetComponent<EnemyCharacter>().DealDamage(DealingDamage);
                 }
             }
             CurrentCooldownLevel = AdjustedCooldownTime;

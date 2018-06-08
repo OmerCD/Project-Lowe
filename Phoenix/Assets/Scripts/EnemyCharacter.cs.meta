@@ -3,7 +3,10 @@ guid: eb05bbb3d6b6b0442b2190028ce9dbe7
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - _notificationObject: {fileID: 1413456512650628, guid: b8b77289cb075ec41b6024673f5179ab,
+      type: 2}
+  - CurrentEnemy: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

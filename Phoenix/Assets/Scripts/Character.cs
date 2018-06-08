@@ -10,6 +10,20 @@ namespace Assets.Scripts
 {
     public partial class Character
     {
+        public void ShowNotification(string text, Color color, float duration)
+        {
+            var notificator = Instantiate(_notificationObject, transform).GetComponent<Notificator>();
+            notificator.ShowNotificationMessage(text,color,duration);
+        }
+
+        public void DealDamage(float damage)
+        {
+            Health -= damage;
+            ShowNotification(damage.ToString(),Color.red, 50);
+        }
+    }
+    public partial class Character
+    {
         public class Immunity
         {
             public string Name
@@ -49,6 +63,7 @@ namespace Assets.Scripts
     }
     public partial class Character : MonoBehaviour
     {
+        [SerializeField] private GameObject _notificationObject;
         [SerializeField]private float _fullHealth = 100;
         public Action<float, float> OnHealthChanged;
         public string Name = "TestCharacter";
@@ -77,10 +92,10 @@ namespace Assets.Scripts
             {
                 return _health;
             }
-
             set
             {
                 OnHealthChanged(_fullHealth, value);
+
                 _health = value;
             }
         }

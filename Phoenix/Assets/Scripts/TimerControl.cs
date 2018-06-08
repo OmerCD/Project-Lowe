@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Assets.Scripts
 {
-    class TimerControl: MonoBehaviour
+    class TimerControl
     {
         private readonly Action<Character> _timerFinished;
         private readonly Character _character;

@@ -70,7 +70,7 @@ public static class DrawbackAssistant
             multiplier = 0.05f;
         }
         Debug.Log("Firewalk With me\nHealth :"+character.Health);
-        character.Health -= (float)Math.Floor(character.CurrentEnemy.Health * multiplier);
+        character.DealDamage((float)Math.Floor(character.CurrentEnemy.Health * multiplier));
         Debug.Log("Health:"+character.Health);
     }
 

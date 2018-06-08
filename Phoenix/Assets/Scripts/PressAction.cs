@@ -49,7 +49,7 @@ namespace Assets.Scripts
             }
             if (_pressed && Input.GetButtonDown("RB"))
             {
-                OnButtonPressed("RB");
+                if (OnButtonPressed != null) OnButtonPressed("RB");
                 var enemies = _eScanner.GetEnemiesInRange();
                 var now = Time.time;
                 var isPerfect = false;
